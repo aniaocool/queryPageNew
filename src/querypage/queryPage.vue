@@ -132,7 +132,7 @@ const route = useRoute();
 let pageKey = ref(route.params.pagekey);
 
 //获取当前组件实例，获取$refs用
-const vm = getCurrentInstance();
+const vm: any = getCurrentInstance();
 
 //mounted
 onMounted(() => {
@@ -144,12 +144,12 @@ onMounted(() => {
  * 各项配置初始化
  *
  */
-let pageController = ref(""); //控制器名
-let conditionColumns = ref([]); //头部查询配置
-let operBtn = ref([]); //头部按钮配置
-let tableColumns = reactive([]); //表格表头列
-let templateColumnData = ref({}); //操作列配置
-let operColumn = ref([]); //操作列按钮
+let pageController: any = ref(""); //控制器名
+let conditionColumns: any = ref([]); //头部查询配置
+let operBtn: any = ref([]); //头部按钮配置
+let tableColumns: any = reactive([]); //表格表头列
+let templateColumnData: any = ref({}); //操作列配置
+let operColumn: any = ref([]); //操作列按钮
 let hasCheckbox = ref(false);
 let queryParams = ref({}); //表单数据model
 
@@ -159,7 +159,7 @@ const initTableConfig = () => {
     pageController.value = queryConfig.controller;
     conditionColumns.value = queryConfig.conditionColumns;
     operBtn.value = queryConfig.buttons;
-    queryConfig.gridColumns.forEach((item) => {
+    queryConfig.gridColumns.forEach((item: any) => {
       let item_align = "center";
       if (item.alignMode === 0) {
         item_align = "left";
@@ -183,10 +183,10 @@ const initTableConfig = () => {
       Array.isArray(queryConfig.templateColumns) &&
       queryConfig.templateColumns.length
     ) {
-      let templates = [],
-        htmlElements = [],
-        operateData;
-      queryConfig.templateColumns.forEach((item) => {
+      let templates: any = [],
+        htmlElements: any = [],
+        operateData: any;
+      queryConfig.templateColumns.forEach((item: any) => {
         if (item.type === "2") {
           hasCheckbox.value = true;
         }
@@ -211,7 +211,7 @@ const initTableConfig = () => {
   });
 };
 //固定列
-const handlerFixed = (val) => {
+const handlerFixed = (val: any) => {
   let data: any = false;
   if (val == 1) {
     data = true;
@@ -262,7 +262,7 @@ const getTableData = (queryParams: any) => {
  *
  */
 //头部按钮图标
-const btnIcon = (item) => {
+const btnIcon = (item: any) => {
   let iconClass;
   if (item.name.indexOf("导入") > -1) {
     iconClass = Upload;
@@ -274,11 +274,14 @@ const btnIcon = (item) => {
   return iconClass;
 };
 //头部按钮函数
-const btnfunc = (btn) => {
+const btnfunc = (btn: any) => {
   if (btn.funName) {
     //checkbox
     if (btn.needCheckbox == 1) {
-      queryPageCtrl[pageController.value][btn.funName].call(this, selectRows);
+      (queryPageCtrl as any)[pageController.value][btn.funName].call(
+        this,
+        selectRows
+      );
     }
     //导出公共函数，示例
     else if (btn.funName == "export") {
@@ -311,7 +314,7 @@ const btnfunc = (btn) => {
     } else {
       let funNameReg = /^([a-zA-Z_]|\$)([\w$]*)$/;
       if (funNameReg.test(btn.funName)) {
-        queryPageCtrl[pageController.value][btn.funName].call(this);
+        (queryPageCtrl as any)[pageController.value][btn.funName].call(this);
       }
     }
   }
@@ -324,7 +327,7 @@ const btnfunc = (btn) => {
  */
 let selectRows = ref([]);
 //选择
-const handleSelectChange = (val) => {
+const handleSelectChange = (val: any) => {
   selectRows.value = val;
 };
 //排序
@@ -337,10 +340,14 @@ const handleSortChange = () => {
  * queryPageFilter过滤器
  *
  */
-const tableColumnFilter = (value, item, row) => {
+const tableColumnFilter = (value: any, item: any, row: any) => {
   let filterValue = null;
-  if (item.valueFilterName && queryPageFilter[item.valueFilterName]) {
-    filterValue = queryPageFilter[item.valueFilterName](value, item, row);
+  if (item.valueFilterName && (queryPageFilter as any)[item.valueFilterName]) {
+    filterValue = (queryPageFilter as any)[item.valueFilterName](
+      value,
+      item,
+      row
+    );
   } else {
     filterValue = value;
   }
@@ -353,12 +360,12 @@ const tableColumnFilter = (value, item, row) => {
  *
  */
 //按钮过滤
-const handleButtonShow = (row) => {
-  let list = [];
-  operColumn.value.forEach((item) => {
-    if (item.filterName && queryPageFilter[item.filterName]) {
+const handleButtonShow = (row: any) => {
+  let list: any = [];
+  operColumn.value.forEach((item: any) => {
+    if (item.filterName && (queryPageFilter as any)[item.filterName]) {
       //return true按钮显示
-      if (queryPageFilter[item.filterName](row)) {
+      if ((queryPageFilter as any)[item.filterName](row)) {
         list.push(item);
       }
     } else {
@@ -368,12 +375,12 @@ const handleButtonShow = (row) => {
   return list;
 };
 //按钮
-const btnFilter = (row) => {
+const btnFilter = (row: any) => {
   return handleButtonShow(row);
 };
 //一般为链接跳转用
-const linkJump = (funName, row) => {
-  queryPageCtrl[pageController.value][funName](row);
+const linkJump = (funName: string, row: any) => {
+  (queryPageCtrl as any)[pageController.value][funName](row);
 };
 
 /**
@@ -383,15 +390,10 @@ const linkJump = (funName, row) => {
  */
 let componentsData = ref("");
 
-const operColumnFunc = (index, row, typeIndex) => {
-  queryPageCtrl[pageController.value][btnFilter(row)[typeIndex].funName].call(
-    this,
-    row,
-    index,
-    typeIndex,
-    vm.ctx.$refs,
-    componentsData
-  );
+const operColumnFunc = (index: any, row: any, typeIndex: any) => {
+  (queryPageCtrl as any)[pageController.value][
+    btnFilter(row)[typeIndex].funName
+  ].call(this, row, index, typeIndex, vm.ctx.$refs, componentsData);
   //componentsData.value = "testCtrl2";
 };
 
@@ -403,7 +405,7 @@ const operColumnFunc = (index, row, typeIndex) => {
 let pageNo = ref(1);
 let pageSize = ref(10);
 let totalRecord = ref(0);
-const handleSizeChange = (val) => {
+const handleSizeChange = (val: any) => {
   pageSize.value = val;
   let queryParams = {
     pageSize: val,
@@ -412,7 +414,7 @@ const handleSizeChange = (val) => {
   getTableData(queryParams);
   sessionStorage.setItem(pageKey.value + "-pagesize", val);
 };
-const handleCurrentChange = (val) => {
+const handleCurrentChange = (val: any) => {
   pageNo.value = val;
   let queryParams = {
     pageSize: pageSize.value,
@@ -422,7 +424,7 @@ const handleCurrentChange = (val) => {
   sessionStorage.setItem(pageKey.value + "-pageno", val);
 };
 //分页序号展示
-const indexMethod = (index) => {
+const indexMethod = (index: any) => {
   return (pageNo.value - 1) * pageSize.value + index + 1;
 };
 </script>

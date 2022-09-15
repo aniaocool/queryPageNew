@@ -139,6 +139,7 @@
 import { watch, ref, reactive } from "vue";
 import type { FormInstance } from "element-plus";
 import { useRoute } from "vue-router";
+import axios from "axios";
 
 interface queryCon {
   [prop: string]: any;
@@ -146,9 +147,9 @@ interface queryCon {
 
 //init参数
 const route = useRoute();
-const queryForm = ref<FormInstance>();
+const queryForm: any = ref<FormInstance>();
 let queryParamCon: queryCon = reactive({});
-let conditionData = ref([]);
+let conditionData: any = ref([]);
 let conditionShow = ref(false);
 let initParam = ref(false);
 
@@ -171,14 +172,14 @@ watch(
 );
 
 //表头配置项生成
-function initConditionData(data) {
+function initConditionData(data: any) {
   conditionData.value = data;
   initConditionList(data);
 }
 
 //表头表单queryParamCon生成
-function initConditionList(data) {
-  data.forEach((item) => {
+function initConditionList(data: any) {
+  data.forEach((item: any) => {
     queryParamCon[item.fieldName] = item.defaultValue ? item.defaultValue : "";
 
     if (item.controlType === "Select" || item.controlType === "MulSelect") {
@@ -197,16 +198,14 @@ function initConditionList(data) {
         //未返回数据请求接口
         if (item.controlDataUrl) {
           //举例
-          this.$axios
-            .get(item.controlDataUrl, { $LoadingMsg: "" })
-            .then((res) => {
-              let options = res.data.data;
-              if (options) {
-                if (Array.isArray(options) && options.length) {
-                  item.controlData = options;
-                }
+          axios.get(item.controlDataUrl).then((res: any) => {
+            let options = res.data.data;
+            if (options) {
+              if (Array.isArray(options) && options.length) {
+                item.controlData = options;
               }
-            });
+            }
+          });
         }
       }
     } else if (item.controlType === "DateRange") {
@@ -221,7 +220,7 @@ function initConditionList(data) {
 
 //格式化param
 const formatQueryParamCon = () => {
-  let params = {};
+  let params: any = {};
   for (let item in queryParamCon) {
     if (typeof queryParamCon[item] == "string") {
       params[item] = queryParamCon[item].trim();
@@ -253,7 +252,7 @@ const handleSession = () => {
 
   //保存session数据
   if (Object.keys(queryParamCon).length) {
-    let storgeParam = {};
+    let storgeParam: any = {};
     Object.keys(queryParamCon).forEach((key) => {
       storgeParam[key] = queryParamCon[key];
     });
@@ -272,7 +271,7 @@ const queryData = (isReset?: boolean, isHandleSearch?: boolean) => {
 const getQuery = () => {
   return formatQueryParamCon();
 };
-const resetData = (formEl: FormInstance | undefined) => {
+const resetData = (formEl: FormInstance) => {
   formEl.resetFields();
   queryData(true);
 };

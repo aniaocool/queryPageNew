@@ -1,11 +1,11 @@
 export default{
-  detailFilter(value){
+  detailFilter(value:any){
     return value
   },
-  detailButtonFilter(row){
+  detailButtonFilter(row:any){
     if(row) return true
   },
-  detailButtonFilter4(row){
+  detailButtonFilter4(row:any){
     // if(row.status!=1){
     //   return false
     // }else{
@@ -13,14 +13,14 @@ export default{
     // }
     if(row) return true
   },
-  typeFilter(value){
+  typeFilter(value:any){
     if(value==1){
       return '类型1'
     }else{
       return '类型2'
     }
   },
-  statusFilter(value){
+  statusFilter(value:any){
     if(value==1){
       return '正常'
     }else{
